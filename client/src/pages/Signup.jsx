@@ -1,38 +1,63 @@
 import React, { useState } from 'react';
+import axios from "axios";
+
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const [_, setCookies] = useCookies(["access_token"]);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle the signup logic here
-    console.log('Signup Submitted', { username, email, password });
-    // This is where you would usually send a request to your server
+    try {
+      await axios.post("http://localhost:3001/auth/register", {
+        username,
+        password,
+      });
+      alert("Registration Completed! Now login.");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const formStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 'auto',
+    width: 'fit-content',
+    padding: '20px',
+    gap: '10px',
+    border: '1px solid #ccc',
+    borderRadius: '10px',
+    marginTop: '20px'
+  };
+
+  const inputStyle = {
+    padding: '8px 15px',
+    margin: '5px 0',
+    borderRadius: '5px',
+    border: '1px solid #ddd',
+    width: '200px'
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={formStyle}>
         <div>
           <label>
             Username:
             <input 
               type="text" 
-              value={username} 
-              onChange={(e) => setUsername(e.target.value)} 
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Email:
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              style={inputStyle}
             />
           </label>
         </div>
@@ -42,12 +67,15 @@ function Signup() {
             <input 
               type="password" 
               value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
             />
           </label>
         </div>
         <div>
-          <button type="submit">Sign Up</button>
+          <button type="submit" style={{ padding: '8px 15px', borderRadius: '5px', border: 'none', backgroundColor: '#007bff', color: 'white', cursor: 'pointer' }}>
+            Sign Up
+          </button>
         </div>
       </form>
     </div>

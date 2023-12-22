@@ -6,9 +6,21 @@ import Category from "../src/components/Category";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Search from "../src/components/Search";
 import styled from "styled-components";
+import { useCookies } from 'react-cookie';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('');
+  const [cookies, setCookies] = useCookies(["access_token"])
+  const username = window.localStorage.getItem("username");
+
+
+  const logout = () => {
+    setCookies("access_token", "")
+    window.localStorage.removeItem("userID")
+    window.localStorage.removeItem("username")
+  }
 
   return (
     <div className="App">
@@ -17,26 +29,32 @@ function App() {
           <Logo to={"/"}>
             <h1>Food Coma</h1>
           </Logo>
-          <ButtonContainer>
-            <StyledLink to="/login">
+          {!cookies.access_token ? (
+            <ButtonContainer>
+            <StyledLink to= "/login">
               <Button className={activeTab === 'login' ? 'active' : ''} onClick={() => setActiveTab('login')}>
                 Log in
               </Button>
             </StyledLink>
-            <StyledLink to="/signup">
+            <StyledLink to= "/signup">
               <Button className={activeTab === 'signup' ? 'active' : ''} onClick={() => setActiveTab('signup')}>
                 Sign up
               </Button>
             </StyledLink>
           </ButtonContainer>
+          ) : (
+            <ButtonContainer>
+              <h2>Welcome, {username}</h2>
+                <Button className={activeTab === 'login' ? 'active' : ''} onClick={logout}>
+                  Log out
+                </Button>
+            </ButtonContainer>
+          )}
+          
         </Nav>
         <Search />
         <Category />
-        <Routes>
-          <Route path="/*" element={<Pages />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Routes>
+        <Pages />
       </BrowserRouter>
     </div>
   );
