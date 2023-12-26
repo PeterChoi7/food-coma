@@ -7,6 +7,7 @@ function Recipe() {
     let params = useParams();
     const [details, setDetails] = useState({});
     const [activeTab, setActiveTab] = useState('instructions');
+    const [isSaved, setIsSaved] = useState(false);
 
     const fetchDetails = async () => {
         try {
@@ -21,6 +22,10 @@ function Recipe() {
         }
     };
 
+    const toggleSave = () => {
+        setIsSaved(!isSaved);
+    };
+
     useEffect(() => {
         fetchDetails();
     }, [params.name]);
@@ -28,6 +33,9 @@ function Recipe() {
     return (
         <DetailedWrapper>
             <LeftColumn>
+                <SaveButton onClick={toggleSave}>
+                    {isSaved ? '❤️ Saved' : '🤍 Save'}
+                </SaveButton>
                 <h2>{details.title}</h2>
                 <img src={details.image} alt="" />
             </LeftColumn>
@@ -111,6 +119,15 @@ const Button = styled.button`
         color: white;
         border-color: transparent;
     }
+`;
+
+const SaveButton = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: ${props => props.isSaved ? 'red' : 'grey'}; // Heart color changes based on save state
+    margin-bottom: 1rem; // Spacing above the title
 `;
 
 const Content = styled.div`
