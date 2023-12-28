@@ -10,7 +10,6 @@ import { BrowserRouter, Routes, Route  } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 function Pages() {
-  const [cookies, setCookies] = useCookies(["access_token"])
   
   return (
     <Routes>

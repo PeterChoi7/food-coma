@@ -2,12 +2,14 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
+import axios from "axios";
 
 function Recipe() {
     let params = useParams();
     const [details, setDetails] = useState({});
     const [activeTab, setActiveTab] = useState('instructions');
     const [isSaved, setIsSaved] = useState(false);
+
 
     const fetchDetails = async () => {
         try {
@@ -22,9 +24,33 @@ function Recipe() {
         }
     };
 
-    const toggleSave = () => {
-        setIsSaved(!isSaved);
+    const toggleSaveRecipe = async () => {
+        const userID = window.localStorage.getItem('userID');
+        if (!userID) {
+            console.error('Please Log In');
+            return; // Exit the function if there is no userID
+        }
+    
+        // Check if all the required details are available
+        if (!details || !details.title || !details.extendedIngredients || !details.instructions || !details.image) {
+            console.error('Recipe details are not available');
+            return; // Exit the function if details are incomplete
+        }
+    
+        // Prepare the recipeData
+        const recipeData = details;
+    
+        const url = `http://localhost:3001/auth/${isSaved ? 'unsaveRecipe' : 'saveRecipe'}`;
+    
+        try {
+            await axios.post(url, { userID, recipeData });
+            setIsSaved(!isSaved); // Toggle the saved status
+            console.log(`${isSaved ? 'Unsaved' : 'Saved'} recipe successfully!`);
+        } catch (error) {
+            console.error('Error toggling saved recipe:', error);
+        }
     };
+
 
     useEffect(() => {
         fetchDetails();
@@ -33,9 +59,9 @@ function Recipe() {
     return (
         <DetailedWrapper>
             <LeftColumn>
-                <SaveButton onClick={toggleSave}>
-                    {isSaved ? '❤️ Saved' : '🤍 Save'}
-                </SaveButton>
+            <SaveButton onClick={toggleSaveRecipe}> {/* Change this to call saveRecipe */}
+                {isSaved ? '❤️ saved' : '🤍 save'}
+            </SaveButton>
                 <h2>{details.title}</h2>
                 <img src={details.image} alt="" />
             </LeftColumn>

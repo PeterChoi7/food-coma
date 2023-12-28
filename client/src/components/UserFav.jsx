@@ -4,31 +4,42 @@ import styled, { css } from 'styled-components'
 import {Splide, SplideSlide} from '@splidejs/react-splide'
 import "@splidejs/splide/dist/css/splide.min.css"
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function UserFav() {
-  const [healthy, setHealthy] = useState([]);
+  const [saved, setSaved] = useState([]);
 
     useEffect(() =>{
-        getHealthy();
+        getSaved();
     },[]);
 
-    const getHealthy = async () => {
 
-        const check = localStorage.getItem('healthy');
-
-        if(check) {
-            setHealthy(JSON.parse(check));
-        } else{
-            const api = await fetch(
-                `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9&veryHealthy=true`
-            );
-            const data = await api.json();
-            
-            localStorage.setItem('healthy', JSON.stringify(data.recipes));
-            setHealthy(data.recipes)
-            console.log(data)
+    const getSaved = async () => {
+        const userID = localStorage.getItem('userID'); // Assuming the userID is stored in localStorage after login
+    
+        if (!userID) {
+            console.error('User is not logged in');
+            return;
+        }
+    
+        try {
+            // Replace with the correct URL and port of your backend
+            const response = await axios.get(`http://localhost:3001/auth/savedRecipes`, {
+                params: { userID: userID }
+            });
+    
+            if (response.data && response.data.savedRecipes) {
+                setSaved(response.data.savedRecipes);
+            } else {
+                console.log('No saved recipes found for this user');
+            }
+        } catch (error) {
+            console.error('Error fetching saved recipes:', error);
         }
     }
+    
+
+    
 
     return (
         <Outer>
@@ -39,7 +50,7 @@ function UserFav() {
                         drag: "free",
                         gap: "5rem"
                     }}>
-                        {healthy.map((recipe) => {
+                        {saved.map((recipe) => {
                             return (                            
                                 <SplideSlide key={recipe.id}>
                                     <Card>
