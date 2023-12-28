@@ -1,4 +1,4 @@
-# Food Coma - A MERN Stack Web Application
+#Food Coma - A MERN Stack Web Application
 
 ## Introduction
 
