@@ -25,8 +25,8 @@ Recipe Explorer is a modern web application designed for food enthusiasts who lo
 
 1. **Clone the Repository:**
    ```bash
-   git clone [repository-link]
-   cd recipe-explorer
+   git clone https://github.com/PeterChoi7/food-coma.git
+   cd food_coma
    ```
 
 2. **Install Dependencies:**
@@ -62,7 +62,7 @@ Contributions to improve Recipe Explorer are welcome. Please ensure to follow th
 
 ## Support
 
-For any assistance or feedback, please contact the support team at [support-email].
+For any assistance or feedback, please contact the support team at peterchoi7250@berkeley.edu.
 
 ---
 
